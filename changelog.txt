@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------------------------------
-Version: 1.1.0b
+Version: 1.1.0
 Date: 2026-05-23
   Features:
     In this fork, hotter heat pipes lose energy faster!
