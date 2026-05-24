@@ -19,4 +19,4 @@ the Stefan Boltzmann law (energy radiated = T^4).
 
 `control.lua` implements a timer that checks all the heat pipes in the game every minute or so, and swaps the correct
 prototype into each heat pipe. I was afraid that this approach would be noticeable in terms of causing lag, but 
-at least in my modest Aquilo base the function runs in 0.16 ms, which is completely unnoticeable. 
+at least in my modest Aquilo base the function runs in 0.16 ms, which is completely unnoticeable. (I have about 1500 heat pipes)
