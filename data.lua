@@ -31,10 +31,48 @@ local heatSinkTimes2 = {
 	collision_mask = {layers = {}},
 }
 
--- Create another dummy assembler for 5x the energy consumption, for heating towers.
-local heatSinkTimes9 = table.deepcopy(heatSinkTimes2)
-heatSinkTimes9.name = "heat-sink-dummy-assembler-9x"
-heatSinkTimes9.heating_energy = (9 * heatingEnergyPerTileKW) .. "kW"
+-- 10 step "lookup table" for T^4 since prototypes are immutable at runtime
+-- meaning I can't just change the heating_energy variable for each heat pipe.
+
+local heatSink50 = table.deepcopy(heatSinkTimes2)
+heatSink50.name = "heat-sink-dummy-50c"
+heatSink50.heating_energy = (0.02 * heatingEnergyPerTileKW) .. "kW"
+
+local heatSink150 = table.deepcopy(heatSinkTimes2)
+heatSink150.name = "heat-sink-dummy-150c"
+heatSink150.heating_energy = (0.06 * heatingEnergyPerTileKW) .. "kW"
+
+local heatSink250 = table.deepcopy(heatSinkTimes2)
+heatSink250.name = "heat-sink-dummy-250c"
+heatSink250.heating_energy = (0.15 * heatingEnergyPerTileKW) .. "kW"
+
+local heatSink350 = table.deepcopy(heatSinkTimes2)
+heatSink350.name = "heat-sink-dummy-350c"
+heatSink350.heating_energy = (0.32 * heatingEnergyPerTileKW) .. "kW"
+
+local heatSink450 = table.deepcopy(heatSinkTimes2)
+heatSink450.name = "heat-sink-dummy-450c"
+heatSink450.heating_energy = (0.59 * heatingEnergyPerTileKW) .. "kW"
+
+local heatSink550 = table.deepcopy(heatSinkTimes2)
+heatSink550.name = "heat-sink-dummy-550c"
+heatSink550.heating_energy = (heatingEnergyPerTileKW) .. "kW"
+
+local heatSink650 = table.deepcopy(heatSinkTimes2)
+heatSink650.name = "heat-sink-dummy-650c"
+heatSink650.heating_energy = (1.6 * heatingEnergyPerTileKW) .. "kW"
+
+local heatSink750 = table.deepcopy(heatSinkTimes2)
+heatSink750.name = "heat-sink-dummy-750c"
+heatSink750.heating_energy = (2.44 * heatingEnergyPerTileKW) .. "kW"
+
+local heatSink850 = table.deepcopy(heatSinkTimes2)
+heatSink850.name = "heat-sink-dummy-850c"
+heatSink850.heating_energy = (3.57 * heatingEnergyPerTileKW) .. "kW"
+
+local heatSink950 = table.deepcopy(heatSinkTimes2)
+heatSink950.name = "heat-sink-dummy-950c"
+heatSink950.heating_energy = (5.06 * heatingEnergyPerTileKW) .. "kW"
 
 -- Create dummy crafting category. Probably not really necessary but seems prudent, might avoid some issues, IDK.
 local heatSinkCraftingCategory = {
@@ -42,4 +80,6 @@ local heatSinkCraftingCategory = {
 	name = "heat-sink-dummy-crafting-category"
 }
 
-data:extend{heatSinkTimes2, heatSinkTimes9, heatSinkCraftingCategory}
+
+
+data:extend{heatSinkTimes2, heatSink50, heatSink150, heatSink250, heatSink350, heatSink450, heatSink550, heatSink650, heatSink750, heatSink850, heatSink950, heatSinkCraftingCategory}

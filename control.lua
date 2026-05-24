@@ -1,5 +1,5 @@
 local TESTING = false
-
+local names_array = {"heat-sink-dummy-50c","heat-sink-dummy-150c","heat-sink-dummy-250c","heat-sink-dummy-350c","heat-sink-dummy-450c","heat-sink-dummy-550c","heat-sink-dummy-650c","heat-sink-dummy-750c","heat-sink-dummy-850c","heat-sink-dummy-950c"}
 -- Function to decide which heat sink if any should be placed on the given ent.
 ---@param ent LuaEntity
 local function getSinkName(ent)
@@ -8,12 +8,21 @@ local function getSinkName(ent)
 		-- This halves the number of dummy assemblers needed without changing total heat cost.
 		local checkerboardPos = ent.position.x + ent.position.y
 		if checkerboardPos % 2 == 0 then
-			return "heat-sink-dummy-assembler-2x"
+			local T = ent.temperature
+			if T < 100 then return "heat-sink-dummy-50c"
+			elseif T < 200 then return "heat-sink-dummy-150c"
+			elseif T < 300 then return "heat-sink-dummy-250c"
+			elseif T < 400 then return "heat-sink-dummy-350c"
+			elseif T < 500 then return "heat-sink-dummy-450c"
+			elseif T < 600 then return "heat-sink-dummy-550c"
+			elseif T < 700 then return "heat-sink-dummy-650c"
+			elseif T < 800 then return "heat-sink-dummy-750c"
+			elseif T < 900 then return "heat-sink-dummy-850c"
+			else return "heat-sink-dummy-950c" 
+			end
 		else
 			return nil
 		end
-	elseif ent.name == "heating-tower" then
-		return "heat-sink-dummy-assembler-9x"
 	end
 end
 
@@ -50,7 +59,7 @@ local function deleteSink(ent)
 	if sinkName == nil then return end
 	if TESTING then game.print("Deleting sinks for an entity...") end
 	local sinks = ent.surface.find_entities_filtered{
-		name = sinkName,
+		name = names_array,
 		position = ent.position,
 	}
 	for i, sink in pairs(sinks) do
@@ -65,7 +74,7 @@ local function maybeCreateSink(ent)
 	local sinkName = getSinkName(ent)
 	if sinkName == nil then return end
 	local numExisting = ent.surface.count_entities_filtered{
-		name = sinkName,
+		name = names_array,
 		position = ent.position,
 	}
 	if numExisting == 0 then createSink(ent, sinkName) end
@@ -92,7 +101,6 @@ end
 
 local filters = {
 	{filter = "name", name = "heat-pipe"},
-	{filter = "name", name = "heating-tower"},
 }
 
 for _, event in pairs{
@@ -124,9 +132,6 @@ script.on_init(function()
 			for _, ent in pairs(surface.find_entities_filtered{type = "heat-pipe", name = "heat-pipe"}) do
 				maybeCreateSink(ent)
 			end
-			for _, ent in pairs(surface.find_entities_filtered{type = "reactor", name = "heating-tower"}) do
-				maybeCreateSink(ent)
-			end
 		end
 	end
 end)
@@ -145,3 +150,18 @@ if TESTING then
 		end
 	end)
 end
+
+--- every 60 seconds update all the heat sinks? will this cause too much lag?
+--- on my moderately developed aquilo, this function takes 0.16 ms I think according to the 
+--- in game timing debug interface. So even running it every few seconds wasn't noticeable. But 
+--- heat pipe temperatures change so slowly (usually) that a minute is probably more reasonable.
+script.on_nth_tick(60 * 60, function(_)
+	for _, surface in pairs(game.surfaces) do
+		if surface.valid and surface.planet ~= nil and surface.planet.prototype.entities_require_heating then
+			for _, ent in pairs(surface.find_entities_filtered{type = "heat-pipe", name = "heat-pipe"}) do
+				deleteSink(ent)
+				createSink(ent, nil)
+			end
+		end
+	end
+end)
